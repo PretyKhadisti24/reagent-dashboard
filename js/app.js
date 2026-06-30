@@ -23,6 +23,8 @@ async function initializeApp() {
 
         updateLastSync();
 
+        Dashboard.render();
+
         hideLoading();
 
         showDashboard();
