@@ -27,9 +27,9 @@ async function initializeApp() {
 
         hideLoading();
 
-        Router.show("dashboard");
-
         showDashboard();
+
+        Router.show("dashboard");
 
         console.log("LIMS Lite Connected");
 
