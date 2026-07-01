@@ -2,7 +2,7 @@
 =========================================================
 LIMS Lite
 Lab Inventory Management System
-Version : 2.0.0
+Version : 2.3.0
 =========================================================
 */
 
@@ -11,12 +11,12 @@ const CONFIG = {
     APP: {
         NAME: "LIMS Lite",
         FULLNAME: "Lab Inventory Management System",
-        VERSION: "2.0.0",
+        VERSION: "2.3.0",
         AUTHOR: "Gyra Project"
     },
 
     API: {
-        BASE_URL: "https://script.google.com/macros/s/AKfycbyE6wqglEsHtkgsKyGYvcTHYLtNGmGsz7pfWbBCpWL5r5_gQiB440Ksi7QSRYD0E5yN/exec",
+        BASE_URL: "https://script.google.com/macros/s/AKfycbzFKo3vajXoH7qs84mbQ85gGk1bFGBNkXXeedKyXl7NyRJh_Z_HQdzyfa3hIl0FUB0/exec",
         TIMEOUT: 15000
     },
 
@@ -30,7 +30,9 @@ const CONFIG = {
 
         DISPOSAL: "Pemusnahan",
 
-        DOCUMENT: "Document Index"
+        DOCUMENT: "Document Index",
+
+        STOCK_CARD: "Kartu Stok"
 
     },
 
@@ -70,6 +72,8 @@ const STATE = {
     disposal: [],
 
     documents: [],
+
+    stockCard: [],
 
     dashboard: {},
 
