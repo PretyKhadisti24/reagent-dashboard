@@ -98,6 +98,54 @@ class ApiService {
 
     }
 
+    static stockCard() {
+
+        return this.fetchSheet(
+            CONFIG.SHEETS.STOCK_CARD
+        );
+
+    }
+
+}
+
+/*
+=========================================================
+Post Data (Write-back ke Apps Script)
+=========================================================
+Catatan: Content-Type sengaja "text/plain" (bukan
+application/json). Ini penting -- kalau pakai
+application/json, browser akan kirim preflight request
+(OPTIONS) dulu, dan Google Apps Script Web App TIDAK bisa
+menjawab preflight itu, hasilnya request akan gagal kena
+error CORS. Dengan text/plain, browser menganggapnya
+"simple request" dan langsung kirim tanpa preflight.
+=========================================================
+*/
+
+async function postToSheet(payload) {
+
+    const response = await fetch(CONFIG.API.BASE_URL, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+        },
+
+        body: JSON.stringify(payload)
+
+    });
+
+    if (!response.ok) {
+
+        throw new Error(
+            `HTTP ${response.status}`
+        );
+
+    }
+
+    return response.json();
+
 }
 
 /*
@@ -120,7 +168,9 @@ async function loadAllData() {
 
             disposal,
 
-            documents
+            documents,
+
+            stockCard
 
         ] = await Promise.all([
 
@@ -132,7 +182,9 @@ async function loadAllData() {
 
             ApiService.disposal(),
 
-            ApiService.documents()
+            ApiService.documents(),
+
+            ApiService.stockCard()
 
         ]);
 
@@ -145,6 +197,8 @@ async function loadAllData() {
         STATE.disposal = disposal;
 
         STATE.documents = documents;
+
+        STATE.stockCard = stockCard;
 
         STATE.online = true;
 
