@@ -16,7 +16,7 @@ const CONFIG = {
     },
 
     API: {
-        BASE_URL: "https://script.google.com/macros/s/AKfycbzFKo3vajXoH7qs84mbQ85gGk1bFGBNkXXeedKyXl7NyRJh_Z_HQdzyfa3hIl0FUB0/exec",
+        BASE_URL: "https://script.google.com/macros/s/AKfycbyE6wqglEsHtkgsKyGYvcTHYLtNGmGsz7pfWbBCpWL5r5_gQiB440Ksi7QSRYD0E5yN/exec",
         TIMEOUT: 15000
     },
 
