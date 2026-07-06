@@ -124,6 +124,7 @@ const StockCard = {
 <th>Kode/Lot</th>
 <th>Expired</th>
 <th>Merk</th>
+<th>Kategori</th>
 <th>Supplier</th>
 <th>In</th>
 <th>Out</th>
@@ -145,6 +146,7 @@ const StockCard = {
 <td>${Utils.escape(row["Kode/Lot"])}</td>
 <td>${Utils.formatDate(row["Expired"])}</td>
 <td>${Utils.escape(row["Merk"])}</td>
+<td>${Utils.escape(row["Kategori"])}</td>
 <td>${Utils.escape(row["Supplier"])}</td>
 <td>${Utils.escape(row["In"])}</td>
 <td>${Utils.escape(row["Out"])}</td>
