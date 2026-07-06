@@ -14,69 +14,95 @@ const StockCard = {
 
     render() {
 
-        this.populateReagenOptions();
+    this.populateFilterOptions("scReagenFilter", "Nama Reagen");
+    this.populateFilterOptions("scKategoriFilter", "Kategori");
+    this.populateFilterOptions("scInstalasiFilter", "Instalasi");
+    this.populateFilterOptions("scSupplierFilter", "Supplier");
 
-        this.bindEvents();
+    this.bindEvents();
 
-        const selected =
-            document.getElementById("scReagenFilter")?.value || "";
+    this.applyFilters();
 
-        this.renderTable(selected);
+},
 
-    },
 
-    populateReagenOptions() {
+populateFilterOptions(id, field) {
 
-        const select = document.getElementById("scReagenFilter");
+    const select = document.getElementById(id);
 
-        if (!select) return;
+    if (!select) return;
 
-        if (select.dataset.populated === "true") return;
+    if (select.dataset.populated === "true") return;
 
-        const data = STATE.stockCard || [];
+    const data = STATE.stockCard || [];
 
-        const seen = new Set();
+    const seen = new Set();
 
-        data.forEach(item => {
+    data.forEach(item => {
 
-            const kodeLot = item["Kode/Lot"];
+        const value = item[field];
 
-            if (!kodeLot || seen.has(kodeLot)) return;
+        if (!value || seen.has(value)) return;
 
-            seen.add(kodeLot);
+        seen.add(value);
 
-            const opt = document.createElement("option");
+        const option = document.createElement("option");
 
-            opt.value = kodeLot;
+        option.value = value;
+        option.textContent = value;
 
-            opt.textContent =
-                `${item["Nama Reagen"]} — ${kodeLot}`;
+        select.appendChild(option);
 
-            select.appendChild(opt);
+    });
 
-        });
+    select.dataset.populated = "true";
 
-        select.dataset.populated = "true";
-
-    },
+},
 
     bindEvents() {
 
-        if (this.initialized) return;
+    if (this.initialized) return;
 
-        this.initialized = true;
+    this.initialized = true;
 
-        const select = document.getElementById("scReagenFilter");
+    [
+        "scReagenFilter",
+        "scKategoriFilter",
+        "scInstalasiFilter",
+        "scSupplierFilter"
+    ].forEach(id => {
 
-        select?.addEventListener("change", () => {
+        document.getElementById(id)?.addEventListener("change", () => {
 
-            this.renderTable(select.value);
+            this.applyFilters();
 
         });
 
-    },
+    });
 
-    renderTable(kodeLotFilter) {
+},
+
+    applyFilters() {
+
+    this.renderTable({
+
+        reagen:
+            document.getElementById("scReagenFilter")?.value || "",
+
+        kategori:
+            document.getElementById("scKategoriFilter")?.value || "",
+
+        instalasi:
+            document.getElementById("scInstalasiFilter")?.value || "",
+
+        supplier:
+            document.getElementById("scSupplierFilter")?.value || ""
+
+    });
+
+},
+
+    renderTable(filters = {}) {
 
         const container =
             document.getElementById("kartuStokContent");
@@ -85,13 +111,44 @@ const StockCard = {
 
         let data = STATE.stockCard || [];
 
-        if (kodeLotFilter) {
+         const {
+    reagen = "",
+    kategori = "",
+    instalasi = "",
+    supplier = ""
+} = filters;
 
-            data = data.filter(
-                row => row["Kode/Lot"] === kodeLotFilter
-            );
+if (reagen) {
 
-        }
+    data = data.filter(row =>
+        row["Nama Reagen"] === reagen
+    );
+
+}
+
+if (kategori) {
+
+    data = data.filter(row =>
+        row["Kategori"] === kategori
+    );
+
+}
+
+if (instalasi) {
+
+    data = data.filter(row =>
+        row["Instalasi"] === instalasi
+    );
+
+}
+
+if (supplier) {
+
+    data = data.filter(row =>
+        row["Supplier"] === supplier
+    );
+
+}
 
         data = [...data].sort((a, b) => {
 
