@@ -2,9 +2,10 @@
 =========================================================
 LIMS Lite
 Stock Card Module (Read-only + Export PDF)
-Filter: Reagen, Kategori, Instalasi, Supplier (independen,
-tidak wajib diisi semua). Export PDF hanya berdasarkan
-Nama Reagen, mengabaikan filter lainnya.
+Filter: Reagen, Kategori, Instalasi, Supplier berupa
+KOTAK SEARCH (substring, case-insensitive), independen,
+tidak wajib diisi semua. Export PDF hanya berdasarkan
+kotak search "Nama Reagen", mengabaikan filter lainnya.
 =========================================================
 */
 
@@ -14,55 +15,9 @@ const StockCard = {
 
     render() {
 
-        this.populateFilterOptions();
-
         this.bindEvents();
 
         this.applyFilters();
-
-    },
-
-    populateFilterOptions() {
-
-        const data = STATE.stockCard || [];
-
-        this.populateSelect("scReagenFilter", data, "Nama Reagen");
-
-        this.populateSelect("scKategoriFilter", data, "Kategori");
-
-        this.populateSelect("scInstalasiFilter", data, "Instalasi");
-
-        this.populateSelect("scSupplierFilter", data, "Supplier");
-
-    },
-
-    populateSelect(id, data, field) {
-
-        const select = document.getElementById(id);
-
-        if (!select) return;
-
-        if (select.dataset.populated === "true") return;
-
-        const values = [...new Set(
-
-            data.map(item => item[field]).filter(Boolean)
-
-        )].sort();
-
-        values.forEach(val => {
-
-            const opt = document.createElement("option");
-
-            opt.value = val;
-
-            opt.textContent = val;
-
-            select.appendChild(opt);
-
-        });
-
-        select.dataset.populated = "true";
 
     },
 
@@ -80,7 +35,7 @@ const StockCard = {
         ].forEach(id => {
 
             document.getElementById(id)?.addEventListener(
-                "change",
+                "input",
                 () => this.applyFilters()
             );
 
@@ -109,6 +64,16 @@ const StockCard = {
 
     },
 
+    matchText(fieldValue, searchText) {
+
+        if (!searchText) return true;
+
+        return String(fieldValue || "")
+            .toLowerCase()
+            .includes(searchText.toLowerCase().trim());
+
+    },
+
     getFilteredData() {
 
         const namaReagen =
@@ -125,21 +90,14 @@ const StockCard = {
 
         let data = STATE.stockCard || [];
 
-        if (namaReagen) {
-            data = data.filter(r => r["Nama Reagen"] === namaReagen);
-        }
+        data = data.filter(r =>
 
-        if (kategori) {
-            data = data.filter(r => r["Kategori"] === kategori);
-        }
+            this.matchText(r["Nama Reagen"], namaReagen) &&
+            this.matchText(r["Kategori"], kategori) &&
+            this.matchText(r["Instalasi"], instalasi) &&
+            this.matchText(r["Supplier"], supplier)
 
-        if (instalasi) {
-            data = data.filter(r => r["Instalasi"] === instalasi);
-        }
-
-        if (supplier) {
-            data = data.filter(r => r["Supplier"] === supplier);
-        }
+        );
 
         return this.sortByDate(data);
 
@@ -224,19 +182,23 @@ const StockCard = {
 
     // ===========================
     // Export PDF - HANYA berdasarkan
-    // Nama Reagen, filter lain
-    // (Kategori/Instalasi/Supplier)
-    // sengaja diabaikan di sini.
+    // kotak search "Nama Reagen",
+    // 3 filter lain diabaikan di sini.
+    // Kalau teks yang diketik cocok
+    // ke lebih dari 1 nama reagen
+    // berbeda, semuanya ikut tercetak
+    // dalam 1 kartu (karena pakai
+    // substring, bukan exact match).
     // ===========================
     exportPdf() {
 
-        const namaReagen =
-            document.getElementById("scReagenFilter")?.value || "";
+        const namaReagenSearch =
+            (document.getElementById("scReagenFilter")?.value || "").trim();
 
-        if (!namaReagen) {
+        if (!namaReagenSearch) {
 
             alert(
-                "Pilih Nama Reagen terlebih dahulu.\n\nExport PDF hanya berdasarkan Nama Reagen — filter Kategori/Instalasi/Supplier tidak berlaku untuk export."
+                "Ketik Nama Reagen di kotak pencarian pertama sebelum export PDF.\n\nExport hanya berdasarkan Nama Reagen — filter Kategori/Instalasi/Supplier diabaikan."
             );
 
             return;
@@ -245,8 +207,8 @@ const StockCard = {
 
         const data = this.sortByDate(
 
-            (STATE.stockCard || []).filter(
-                r => r["Nama Reagen"] === namaReagen
+            (STATE.stockCard || []).filter(r =>
+                this.matchText(r["Nama Reagen"], namaReagenSearch)
             )
 
         );
@@ -264,13 +226,14 @@ const StockCard = {
 
         let html = `
 <h2>KARTU STOK REAGEN</h2>
-<p><strong>Nama Reagen:</strong> ${Utils.escape(namaReagen)}</p>
+<p><strong>Nama Reagen:</strong> ${Utils.escape(namaReagenSearch)}</p>
 <p><strong>Dicetak:</strong> ${today}</p>
 <table>
 <thead>
 <tr>
 <th>Tanggal</th>
 <th>Instalasi</th>
+<th>Nama Reagen</th>
 <th>Kode/Lot</th>
 <th>Expired</th>
 <th>In</th>
@@ -286,7 +249,7 @@ const StockCard = {
         if (data.length === 0) {
 
             html += `
-<tr><td colspan="9">Belum ada riwayat transaksi untuk reagen ini.</td></tr>
+<tr><td colspan="10">Belum ada riwayat transaksi untuk reagen ini.</td></tr>
 `;
 
         }
@@ -299,6 +262,7 @@ const StockCard = {
 <tr>
 <td>${Utils.formatDate(row["Tanggal"])}</td>
 <td>${Utils.escape(row["Instalasi"])}</td>
+<td>${Utils.escape(row["Nama Reagen"])}</td>
 <td>${Utils.escape(row["Kode/Lot"])}</td>
 <td>${Utils.formatDate(row["Expired"])}</td>
 <td>${Utils.escape(row["In"])}</td>
