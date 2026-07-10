@@ -70,7 +70,22 @@ const Alerts = {
 
         const canvas = document.getElementById("alertsChart");
 
-        if (!canvas || typeof Chart === "undefined") return;
+        if (!canvas) return;
+
+        if (typeof Chart === "undefined") {
+
+            const container = canvas.parentElement;
+
+            if (container) {
+
+                container.innerHTML =
+                    "<p>Grafik gagal dimuat (library Chart.js belum siap). Coba refresh halaman.</p>";
+
+            }
+
+            return;
+
+        }
 
         const grouped = {};
 
