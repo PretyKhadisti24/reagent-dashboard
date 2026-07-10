@@ -321,6 +321,12 @@ tr:hover td{
   color:var(--muted);
 }
 
+.chart-container{
+  position:relative;
+  height:280px;
+  margin-top:12px;
+}
+
 .status-online{color:var(--success);font-weight:600}
 .status-offline{color:var(--danger);font-weight:600}
 
