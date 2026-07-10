@@ -6,6 +6,8 @@
 <title>LIMS Lite v2.3</title>
 <link rel="stylesheet" href="css/style.css">
 
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
 <script defer src="js/config.js"></script>
 <script defer src="js/api.js"></script>
 <script defer src="js/utils.js"></script>
@@ -124,7 +126,16 @@ Memuat inventory...
 </section>
 
 <section id="alertsPage" class="page" hidden>
+
+<div class="card">
+<h3>Ringkasan Alert per Instalasi</h3>
+<div class="chart-container">
+<canvas id="alertsChart"></canvas>
+</div>
+</div>
+
 <div class="card"><div id="alertsContent"></div></div>
+
 </section>
 
 <section id="penerimaanPage" class="page" hidden>
