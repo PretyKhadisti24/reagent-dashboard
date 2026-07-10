@@ -199,27 +199,45 @@ nav{
   display:none;
 }
 #kartuStokPrintArea h2{
-  margin-bottom:8px;
+  margin-bottom:4px;
+  color:#000;
+  font-size:20px;
+}
+#kartuStokPrintArea p{
+  color:#000;
+  margin-bottom:2px;
+  font-size:13px;
 }
 #kartuStokPrintArea table{
   width:100%;
   border-collapse:collapse;
-  margin-top:12px;
+  margin-top:14px;
 }
 #kartuStokPrintArea th,
 #kartuStokPrintArea td{
-  border:1px solid #333;
+  border:1px solid #000;
   padding:6px 8px;
   font-size:12px;
   text-align:left;
+  color:#000;
+  background:#fff;
+}
+#kartuStokPrintArea th{
+  font-weight:700;
 }
 
 @media print{
+  html, body{
+    background:#fff !important;
+  }
   #app{
     display:none !important;
   }
   #kartuStokPrintArea{
     display:block !important;
+    background:#fff !important;
+    color:#000 !important;
+    padding:16px;
   }
 }
 
