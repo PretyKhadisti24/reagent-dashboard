@@ -7,9 +7,13 @@ Alerts Module
 
 const Alerts = {
 
+    chartInstance: null,
+
     render() {
 
         const data = STATE.inventory || [];
+
+        this.renderChart(data);
 
         const container = document.getElementById("alertsContent");
 
@@ -59,6 +63,103 @@ const Alerts = {
         );
 
         container.innerHTML = html;
+
+    },
+
+    renderChart(data) {
+
+        const canvas = document.getElementById("alertsChart");
+
+        if (!canvas || typeof Chart === "undefined") return;
+
+        const grouped = {};
+
+        data.forEach(item => {
+
+            const inst = item["Instalasi"] || "Lainnya";
+
+            if (!grouped[inst]) {
+
+                grouped[inst] = { expired: 0, warning: 0, lowStock: 0 };
+
+            }
+
+            const status = Utils.expiryStatus(item["Exp. Date"]);
+
+            if (status === "expired") grouped[inst].expired++;
+
+            if (status === "warning") grouped[inst].warning++;
+
+            const stock = Number(item["Sisa Stok"] || 0);
+
+            const min = Number(item["Stok Min"] || 0);
+
+            if (stock <= min) grouped[inst].lowStock++;
+
+        });
+
+        const labels = Object.keys(grouped).sort();
+
+        const expiredData = labels.map(l => grouped[l].expired);
+
+        const warningData = labels.map(l => grouped[l].warning);
+
+        const lowStockData = labels.map(l => grouped[l].lowStock);
+
+        if (this.chartInstance) {
+
+            this.chartInstance.destroy();
+
+        }
+
+        this.chartInstance = new Chart(canvas, {
+
+            type: "bar",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+                    {
+                        label: "Expired",
+                        data: expiredData,
+                        backgroundColor: "#e08a8a"
+                    },
+                    {
+                        label: "Near Expired",
+                        data: warningData,
+                        backgroundColor: "#f0c674"
+                    },
+                    {
+                        label: "Stok Rendah",
+                        data: lowStockData,
+                        backgroundColor: "#b8698c"
+                    }
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false,
+
+                plugins: {
+                    legend: { position: "bottom" }
+                },
+
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { stepSize: 1 }
+                    }
+                }
+
+            }
+
+        });
 
     },
 
