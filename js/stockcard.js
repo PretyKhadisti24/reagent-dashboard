@@ -232,15 +232,13 @@ const StockCard = {
 <thead>
 <tr>
 <th>Tanggal</th>
-<th>Instalasi</th>
 <th>Nama Reagen</th>
-<th>Kode/Lot</th>
-<th>Expired</th>
+<th>No. LOT</th>
+<th>Kategori</th>
 <th>In</th>
 <th>Out</th>
 <th>Balance</th>
 <th>Keterangan</th>
-<th>PIC</th>
 </tr>
 </thead>
 <tbody>
@@ -249,7 +247,7 @@ const StockCard = {
         if (data.length === 0) {
 
             html += `
-<tr><td colspan="10">Belum ada riwayat transaksi untuk reagen ini.</td></tr>
+<tr><td colspan="8">Belum ada riwayat transaksi untuk reagen ini.</td></tr>
 `;
 
         }
@@ -261,15 +259,13 @@ const StockCard = {
                 html += `
 <tr>
 <td>${Utils.formatDate(row["Tanggal"])}</td>
-<td>${Utils.escape(row["Instalasi"])}</td>
 <td>${Utils.escape(row["Nama Reagen"])}</td>
 <td>${Utils.escape(row["Kode/Lot"])}</td>
-<td>${Utils.formatDate(row["Expired"])}</td>
+<td>${Utils.escape(row["Kategori"])}</td>
 <td>${Utils.escape(row["In"])}</td>
 <td>${Utils.escape(row["Out"])}</td>
 <td>${Utils.number(row["Balance"])}</td>
 <td>${Utils.escape(row["Keterangan"])}</td>
-<td>${Utils.escape(row["PIC"])}</td>
 </tr>
 `;
 
